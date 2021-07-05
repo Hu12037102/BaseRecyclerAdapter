@@ -58,6 +58,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void addHeadView(@NonNull View view) {
+        removeAllView(mClHeadParent);
         mClHeadParent.addView(view);
         mHasHeadView = true;
     }
@@ -68,6 +69,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void addFootView(@NonNull View view) {
+        removeAllView(mClFootParent);
         mClFootParent.addView(view);
         mHasFootView = true;
     }

@@ -34,17 +34,17 @@ public class MainActivity extends AppCompatActivity {
         AppCompatTextView atvFootContent = footView.findViewById(R.id.atv_content);
         atvFootContent.setText("我的FootView");
         adapter.addFootView(footView);
-        adapter.setHasStableIds(false);
+
         rvData.setAdapter(adapter);
 
         rvData.postDelayed(new Runnable() {
             @Override
             public void run() {
-                adapter.removeFootView();
                 View footView1 = getLayoutInflater().inflate(R.layout.item_text_view, rvData, false);
                 AppCompatTextView atvFootContent1 = footView1.findViewById(R.id.atv_content);
                 atvFootContent1.setText("我的FootView------");
-                adapter.addFootView(footView1);
+             //   adapter.addFootView(footView1);
+
                 data.clear();
                 adapter.notifyDataSetChanged();
             }
