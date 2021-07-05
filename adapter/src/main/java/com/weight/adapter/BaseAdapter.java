@@ -64,12 +64,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     public void removeHeadView() {
         removeAllView(mClHeadParent);
-        removeAllView(mClHeadParent);
         mHasHeadView = false;
     }
 
     public void addFootView(@NonNull View view) {
-        removeAllView(mClFootParent);
         mClFootParent.addView(view);
         mHasFootView = true;
     }
@@ -114,6 +112,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        Log.w("onBindViewHolder--", getItemViewType(position) + "--");
         if (holder instanceof EmptyViewHolder) {
             EmptyViewHolder emptyViewHolder = (EmptyViewHolder) holder;
             if (!isShowDefaultEmptyView) {
@@ -122,16 +121,13 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             } else {
                 holder.itemView.setVisibility(View.VISIBLE);
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onItemClickListener != null) {
-                        onItemClickListener.onClickEmptyView(v);
-                    }
+            holder.itemView.setOnClickListener(v -> {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onClickEmptyView(v);
                 }
             });
 
-        } else {
+        } else if (getItemViewType(position) == 0) {
             if (mHasHeadView) {
                 position--;
             }
