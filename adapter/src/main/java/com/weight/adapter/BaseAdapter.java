@@ -6,9 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -32,8 +30,8 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     private boolean isShowDefaultEmptyView = true;
     private boolean mHasHeadView;
     private boolean mHasFootView;
-    private ConstraintLayout mFootParent;
-    private ConstraintLayout mHeadParent;
+    private ConstraintLayout mClFootParent;
+    private ConstraintLayout mClHeadParent;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -49,10 +47,10 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     protected void initHeadFootParent() {
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mHeadParent = new ConstraintLayout(mContext);
-        mHeadParent.setLayoutParams(params);
-        mFootParent = new ConstraintLayout(mContext);
-        mFootParent.setLayoutParams(params);
+        mClHeadParent = new ConstraintLayout(mContext);
+        mClHeadParent.setLayoutParams(params);
+        mClFootParent = new ConstraintLayout(mContext);
+        mClFootParent.setLayoutParams(params);
     }
 
     protected boolean isShowDefaultEmptyView() {
@@ -60,24 +58,24 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void addHeadView(@NonNull View view) {
-        mHeadParent.addView(view);
+        mClHeadParent.addView(view);
         mHasHeadView = true;
     }
 
     public void removeHeadView() {
-        removeAllView(mHeadParent);
-        removeAllView(mHeadParent);
+        removeAllView(mClHeadParent);
+        removeAllView(mClHeadParent);
         mHasHeadView = false;
     }
 
     public void addFootView(@NonNull View view) {
-        removeAllView(mFootParent);
-        mFootParent.addView(view);
+        removeAllView(mClFootParent);
+        mClFootParent.addView(view);
         mHasFootView = true;
     }
 
     public void removeFootView() {
-        removeAllView(mFootParent);
+        removeAllView(mClFootParent);
         mHasFootView = false;
     }
 
@@ -93,11 +91,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         RecyclerView.ViewHolder viewHolder;
         switch (viewType) {
             case BaseAdapter.HEAD_VIEW_TYPE:
-                viewHolder = new RecyclerView.ViewHolder(mHeadParent) {
+                viewHolder = new RecyclerView.ViewHolder(mClHeadParent) {
                 };
                 break;
             case BaseAdapter.FOOT_VIEW_TYPE:
-                viewHolder = new RecyclerView.ViewHolder(mFootParent) {
+                viewHolder = new RecyclerView.ViewHolder(mClFootParent) {
                 };
                 break;
             case BaseAdapter.EMPTY_VIEW_TYPE:
