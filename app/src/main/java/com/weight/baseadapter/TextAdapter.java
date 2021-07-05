@@ -1,6 +1,7 @@
 package com.weight.baseadapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,11 @@ public class TextAdapter extends BaseAdapter<String> {
         if (holder instanceof ViewHolder) {
             ViewHolder textHolder = (ViewHolder) holder;
             textHolder.mAtvContent.setText(mData.get(position));
+            if (position % 2 == 0) {
+                holder.itemView.setBackgroundColor(Color.WHITE);
+            } else {
+                holder.itemView.setBackgroundColor(Color.BLACK);
+            }
         }
     }
 

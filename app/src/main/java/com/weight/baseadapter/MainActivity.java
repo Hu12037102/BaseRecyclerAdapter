@@ -36,5 +36,18 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFootView(footView);
 
         rvData.setAdapter(adapter);
+
+        rvData.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                adapter.removeFootView();
+                View footView1= getLayoutInflater().inflate(R.layout.item_text_view, rvData, false);
+                AppCompatTextView atvFootContent1 = footView1.findViewById(R.id.atv_content);
+                atvFootContent1.setText("我的FootView------");
+                adapter.addFootView(footView1);
+              //  adapter.notifyDataSetChanged();
+            }
+        },2000);
+
     }
 }

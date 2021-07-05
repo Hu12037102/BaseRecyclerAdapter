@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -26,10 +28,12 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     private static final int HEAD_VIEW_TYPE = 100;
     private static final int FOOT_VIEW_TYPE = 101;
     private static final int EMPTY_VIEW_TYPE = 102;
-    private View mHeadView;
-    private View mFootView;
     //默认要不要展示NotDataView
-    private boolean isShowDefaultEmptyView= true;
+    private boolean isShowDefaultEmptyView = true;
+    private boolean mHasHeadView;
+    private boolean mHasFootView;
+    private ConstraintLayout mFootParent;
+    private ConstraintLayout mHeadParent;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -40,6 +44,15 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public BaseAdapter(@NonNull Context context, @NonNull List<T> data) {
         this.mContext = context;
         this.mData = data;
+        initHeadFootParent();
+    }
+
+    protected void initHeadFootParent() {
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mHeadParent = new ConstraintLayout(mContext);
+        mHeadParent.setLayoutParams(params);
+        mFootParent = new ConstraintLayout(mContext);
+        mFootParent.setLayoutParams(params);
     }
 
     protected boolean isShowDefaultEmptyView() {
@@ -47,11 +60,31 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void addHeadView(@NonNull View view) {
-        this.mHeadView = view;
+        mHeadParent.addView(view);
+        mHasHeadView = true;
+    }
+
+    public void removeHeadView() {
+        removeAllView(mHeadParent);
+        removeAllView(mHeadParent);
+        mHasHeadView = false;
     }
 
     public void addFootView(@NonNull View view) {
-        this.mFootView = view;
+        removeAllView(mFootParent);
+        mFootParent.addView(view);
+        mHasFootView = true;
+    }
+
+    public void removeFootView() {
+        removeAllView(mFootParent);
+        mHasFootView = false;
+    }
+
+    private void removeAllView(ViewGroup viewGroup) {
+        if (viewGroup != null && viewGroup.getChildCount() > 0) {
+            viewGroup.removeAllViews();
+        }
     }
 
     @NonNull
@@ -60,11 +93,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         RecyclerView.ViewHolder viewHolder;
         switch (viewType) {
             case BaseAdapter.HEAD_VIEW_TYPE:
-                viewHolder = new RecyclerView.ViewHolder(mHeadView) {
+                viewHolder = new RecyclerView.ViewHolder(mHeadParent) {
                 };
                 break;
             case BaseAdapter.FOOT_VIEW_TYPE:
-                viewHolder = new RecyclerView.ViewHolder(mFootView) {
+                viewHolder = new RecyclerView.ViewHolder(mFootParent) {
                 };
                 break;
             case BaseAdapter.EMPTY_VIEW_TYPE:
@@ -101,20 +134,20 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             });
 
         } else {
-            if (mHeadView!=null){
+            if (mHasHeadView) {
                 position--;
             }
-            clickItemViewHolder(holder,position);
+            clickItemViewHolder(holder, position);
             onBindViewHolderChild(holder, position);
 
         }
     }
 
-    protected  void clickItemViewHolder(RecyclerView.ViewHolder holder, int position){
+    protected void clickItemViewHolder(RecyclerView.ViewHolder holder, int position) {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onItemClickListener!=null){
+                if (onItemClickListener != null) {
                     onItemClickListener.onClickItem(v, position);
                 }
             }
@@ -122,7 +155,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (onItemClickListener!=null){
+                if (onItemClickListener != null) {
                     onItemClickListener.onLongClickItem(v, position);
                 }
                 return false;
@@ -134,15 +167,16 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemViewType(int position) {
         int type = super.getItemViewType(position);
-        if (mHeadView != null && position == 0) {
+        if (mHasHeadView && position == 0) {
             type = BaseAdapter.HEAD_VIEW_TYPE;
         }
         if (BaseUtils.isEmptyList(mData)) {
             type = BaseAdapter.EMPTY_VIEW_TYPE;
         }
-        if (mFootView != null && position == getItemCount() - 1) {
+        if (mHasFootView && position == getItemCount() - 1) {
             type = BaseAdapter.FOOT_VIEW_TYPE;
         }
+
         return type;
     }
 
@@ -154,11 +188,11 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         int count = 0;
-        if (mHeadView != null) {
+        if (mHasHeadView) {
             count++;
         }
-        count = BaseUtils.isEmptyList(mData) ? count + 1 : BaseUtils.getListSize(mData);
-        if (mFootView != null) {
+        count = BaseUtils.isEmptyList(mData) ? count + 1 : count + BaseUtils.getListSize(mData);
+        if (mHasFootView) {
             count++;
         }
         Log.w("getItemCount--", count + "--");
