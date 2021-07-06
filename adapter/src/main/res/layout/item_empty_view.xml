@@ -13,7 +13,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/atv_empty"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/atv_empty"
@@ -24,5 +25,6 @@
         android:textColor="@android:color/black"
         android:textSize="14sp"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/aiv_empty" />
+        app:layout_constraintTop_toBottomOf="@id/aiv_empty"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
