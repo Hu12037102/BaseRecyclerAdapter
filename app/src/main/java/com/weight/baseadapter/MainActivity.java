@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -25,12 +26,12 @@ public class MainActivity extends AppCompatActivity {
         }
         TextAdapter adapter = new TextAdapter(this, data);
 
-        View headView = getLayoutInflater().inflate(R.layout.item_text_view, rvData, false);
+        View headView = LayoutInflater.from(this).inflate(R.layout.item_text_view, rvData, false);
         AppCompatTextView atvContent = headView.findViewById(R.id.atv_content);
         atvContent.setText("我的headView");
         adapter.addHeadView(headView);
 
-        View footView = getLayoutInflater().inflate(R.layout.item_text_view, rvData, false);
+        View footView = LayoutInflater.from(this).inflate(R.layout.item_text_view, rvData, false);
         AppCompatTextView atvFootContent = footView.findViewById(R.id.atv_content);
         atvFootContent.setText("我的FootView");
         adapter.addFootView(footView);
@@ -40,15 +41,16 @@ public class MainActivity extends AppCompatActivity {
         rvData.postDelayed(new Runnable() {
             @Override
             public void run() {
+                adapter.removeFootView();
                 View footView1 = getLayoutInflater().inflate(R.layout.item_text_view, rvData, false);
                 AppCompatTextView atvFootContent1 = footView1.findViewById(R.id.atv_content);
                 atvFootContent1.setText("我的FootView------");
-             //   adapter.addFootView(footView1);
+                adapter.addFootView(footView1);
 
                 data.clear();
                 adapter.notifyDataSetChanged();
             }
-        }, 2000);
+        }, 3000);
 
     }
 }

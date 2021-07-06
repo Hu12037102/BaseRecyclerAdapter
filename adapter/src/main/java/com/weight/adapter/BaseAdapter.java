@@ -58,7 +58,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void addHeadView(@NonNull View view) {
-        removeAllView(mClHeadParent);
+        //  removeAllView(mClHeadParent);
         mClHeadParent.addView(view);
         mHasHeadView = true;
     }
@@ -69,7 +69,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public void addFootView(@NonNull View view) {
-        removeAllView(mClFootParent);
+        // removeAllView(mClFootParent);
         mClFootParent.addView(view);
         mHasFootView = true;
     }
@@ -88,6 +88,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.w("BaseAdapter--", "onCreateViewHolder:" + parent + "--");
         RecyclerView.ViewHolder viewHolder;
         switch (viewType) {
             case BaseAdapter.HEAD_VIEW_TYPE:
@@ -114,7 +115,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Log.w("onBindViewHolder--", getItemViewType(position) + "--");
+        Log.w("BaseAdapter--", "onBindViewHolder:" + holder + "--" + position);
         if (holder instanceof EmptyViewHolder) {
             EmptyViewHolder emptyViewHolder = (EmptyViewHolder) holder;
             if (!isShowDefaultEmptyView) {
@@ -162,22 +163,23 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemViewType(int position) {
-        int type = super.getItemViewType(position);
+        int type;
         if (mHasHeadView && position == 0) {
             type = BaseAdapter.HEAD_VIEW_TYPE;
-        }
-        if (BaseUtils.isEmptyList(mData)) {
-            type = BaseAdapter.EMPTY_VIEW_TYPE;
-        }
-        if (mHasFootView && position == getItemCount() - 1) {
+        } else if (mHasFootView && position == getItemCount() - 1) {
             type = BaseAdapter.FOOT_VIEW_TYPE;
+        } else if (BaseUtils.isEmptyList(mData)) {
+            type = BaseAdapter.EMPTY_VIEW_TYPE;
+        } else {
+            type = super.getItemViewType(position);
         }
-
+        Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
         return type;
     }
 
     @Override
     public long getItemId(int position) {
+        Log.w("BaseAdapter--", "getItemId:" + position + "--");
         return position;
     }
 
@@ -191,7 +193,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (mHasFootView) {
             count++;
         }
-        Log.w("getItemCount--", count + "--");
+        Log.w("BaseAdapter--", "getItemCount:" + count + "--");
         return count;
     }
 
