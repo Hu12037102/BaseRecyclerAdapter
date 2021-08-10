@@ -32,6 +32,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     private boolean mHasFootView;
     private ConstraintLayout mClFootParent;
     private ConstraintLayout mClHeadParent;
+    protected int mAllCount;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -166,37 +167,73 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         int type;
         if (mHasHeadView && position == 0) {
             type = BaseAdapter.HEAD_VIEW_TYPE;
-        } else if (mHasFootView && position == getItemCount() - 1) {
+        } else if (mHasFootView && position == mAllCount - 1) {
             type = BaseAdapter.FOOT_VIEW_TYPE;
         } else if (BaseUtils.isEmptyList(mData)) {
             type = BaseAdapter.EMPTY_VIEW_TYPE;
         } else {
             type = super.getItemViewType(position);
         }
-        Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
+      //  Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
         return type;
     }
 
     @Override
     public long getItemId(int position) {
-        Log.w("BaseAdapter--", "getItemId:" + position + "--");
+     //   Log.w("BaseAdapter--", "getItemId:" + position + "--");
         return position;
     }
 
     @Override
     public int getItemCount() {
-        int count = 0;
+        mAllCount= 0;
         if (mHasHeadView) {
-            count++;
+            mAllCount++;
         }
-        count = BaseUtils.isEmptyList(mData) ? count + 1 : count + BaseUtils.getListSize(mData);
+        mAllCount = BaseUtils.isEmptyList(mData) ? mAllCount + 1 : mAllCount + BaseUtils.getListSize(mData);
         if (mHasFootView) {
-            count++;
+            mAllCount++;
         }
-        Log.w("BaseAdapter--", "getItemCount:" + count + "--");
-        return count;
+     //   Log.w("BaseAdapter--", "getItemCount:" + mAllCount + "--");
+        return mAllCount;
     }
 
+    @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        Log.w("BaseAdapter--", "onViewAttachedToWindow:" + holder + "--");
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        Log.w("BaseAdapter--", "onViewDetachedFromWindow:" + holder + "--");
+    }
+
+    @Override
+    public boolean onFailedToRecycleView(@NonNull RecyclerView.ViewHolder holder) {
+        Log.w("BaseAdapter--", "onFailedToRecycleView:" + holder + "--");
+        return super.onFailedToRecycleView(holder);
+
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        Log.w("BaseAdapter--", "onAttachedToRecyclerView:" + recyclerView + "--");
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView);
+        Log.w("BaseAdapter--", "onDetachedFromRecyclerView:" + recyclerView + "--");
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        Log.w("BaseAdapter--", "onViewRecycled:" + holder + "--");
+    }
 
     public static class EmptyViewHolder extends RecyclerView.ViewHolder {
 

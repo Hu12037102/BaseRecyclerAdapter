@@ -45,6 +45,12 @@ public class TextAdapter extends BaseAdapter<String> {
         }
     }
 
+    @Override
+    public void onViewDetachedFromWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+       // mData.remove(10);
+       // notifyDataSetChanged();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 

@@ -1,15 +1,25 @@
 package com.weight.baseadapter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.util.ArrayMap;
+import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,18 +54,20 @@ public class MainActivity extends AppCompatActivity {
 
         mRvData.postDelayed(mRunnable, 3000);
 
+
     }
 
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            mAdapter.removeFootView();
+            /*mAdapter.removeFootView();
             View footView1 = getLayoutInflater().inflate(R.layout.item_text_view, mRvData, false);
             AppCompatTextView atvFootContent1 = footView1.findViewById(R.id.atv_content);
             atvFootContent1.setText("我的FootView------");
-            mAdapter.addFootView(footView1);
-
-            mData.clear();
+            mAdapter.addFootView(footView1);*/
+            mData.remove(1);
+            mData.remove(2);
+            mData.remove(3);
             mAdapter.notifyDataSetChanged();
         }
     };
