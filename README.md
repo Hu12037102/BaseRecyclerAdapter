@@ -1,1 +1,1 @@
-# BaseRecyclerAdapter
+## BaseRecyclerAdapter
