@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRvData = findViewById(R.id.rv_data);
-        mRvData.setLayoutManager(new LinearLayoutManager(this));
+        StaggeredGridLayoutManager layoutManager =  new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        mRvData.setLayoutManager(layoutManager);
         mData = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
             mData.add("胡歌：" + i);
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRvData.setAdapter(mAdapter);
 
-        mRvData.postDelayed(mRunnable, 3000);
+    //    mRvData.postDelayed(mRunnable, 3000);
 
 
     }
@@ -60,11 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private final Runnable mRunnable = new Runnable() {
         @Override
         public void run() {
-            /*mAdapter.removeFootView();
-            View footView1 = getLayoutInflater().inflate(R.layout.item_text_view, mRvData, false);
-            AppCompatTextView atvFootContent1 = footView1.findViewById(R.id.atv_content);
-            atvFootContent1.setText("我的FootView------");
-            mAdapter.addFootView(footView1);*/
+
             mData.remove(1);
             mData.remove(2);
             mData.remove(3);

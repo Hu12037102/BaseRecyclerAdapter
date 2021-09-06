@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import java.util.List;
 
@@ -174,19 +175,19 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         } else {
             type = super.getItemViewType(position);
         }
-      //  Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
+        //  Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
         return type;
     }
 
     @Override
     public long getItemId(int position) {
-     //   Log.w("BaseAdapter--", "getItemId:" + position + "--");
+        //   Log.w("BaseAdapter--", "getItemId:" + position + "--");
         return position;
     }
 
     @Override
     public int getItemCount() {
-        mAllCount= 0;
+        mAllCount = 0;
         if (mHasHeadView) {
             mAllCount++;
         }
@@ -194,7 +195,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (mHasFootView) {
             mAllCount++;
         }
-     //   Log.w("BaseAdapter--", "getItemCount:" + mAllCount + "--");
+        //   Log.w("BaseAdapter--", "getItemCount:" + mAllCount + "--");
         return mAllCount;
     }
 
@@ -202,6 +203,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         Log.w("BaseAdapter--", "onViewAttachedToWindow:" + holder + "--");
+        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
+            StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) layoutParams;
+            params.setFullSpan(mHasFootView || mHasHeadView);
+            int itemType = holder.getItemViewType();
+            params.setFullSpan((mHasHeadView && itemType == BaseAdapter.HEAD_VIEW_TYPE) || (mHasFootView && itemType == BaseAdapter.FOOT_VIEW_TYPE));
+        }
+
     }
 
     @Override
