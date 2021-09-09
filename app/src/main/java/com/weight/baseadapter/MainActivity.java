@@ -3,6 +3,7 @@ package com.weight.baseadapter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -34,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRvData = findViewById(R.id.rv_data);
-        StaggeredGridLayoutManager layoutManager =  new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+       // StaggeredGridLayoutManager layoutManager =  new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);
+        GridLayoutManager layoutManager =  new GridLayoutManager(this,2);
         mRvData.setLayoutManager(layoutManager);
         mData = new ArrayList<>();
         for (int i = 0; i < 50; i++) {

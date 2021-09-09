@@ -1,6 +1,7 @@
 package com.weight.adapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -33,7 +35,6 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     private boolean mHasFootView;
     private ConstraintLayout mClFootParent;
     private ConstraintLayout mClHeadParent;
-    protected int mAllCount;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
@@ -168,14 +169,14 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         int type;
         if (mHasHeadView && position == 0) {
             type = BaseAdapter.HEAD_VIEW_TYPE;
-        } else if (mHasFootView && position == mAllCount - 1) {
+        } else if (mHasFootView && position == getItemCount() - 1) {
             type = BaseAdapter.FOOT_VIEW_TYPE;
         } else if (BaseUtils.isEmptyList(mData)) {
             type = BaseAdapter.EMPTY_VIEW_TYPE;
         } else {
             type = super.getItemViewType(position);
         }
-          Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
+        Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
         return type;
     }
 
@@ -187,30 +188,43 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        mAllCount = 0;
+        int count = 0;
         if (mHasHeadView) {
-            mAllCount++;
+            count++;
         }
-        mAllCount = BaseUtils.isEmptyList(mData) ? mAllCount + 1 : mAllCount + BaseUtils.getListSize(mData);
+        count = BaseUtils.isEmptyList(mData) ? count + 1 : count + BaseUtils.getListSize(mData);
         if (mHasFootView) {
-            mAllCount++;
+            count++;
         }
-          Log.w("BaseAdapter--", "getItemCount:" + mAllCount + "--");
-        return mAllCount;
+        Log.w("BaseAdapter--", "getItemCount:" + count + "--");
+        return count;
     }
 
     @Override
     public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         Log.w("BaseAdapter--", "onViewAttachedToWindow:" + holder + "--");
-        ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
+        View view = holder.itemView;
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        int itemType = holder.getItemViewType();
         if (layoutParams instanceof StaggeredGridLayoutManager.LayoutParams) {
             StaggeredGridLayoutManager.LayoutParams params = (StaggeredGridLayoutManager.LayoutParams) layoutParams;
-            params.setFullSpan(mHasFootView || mHasHeadView);
-            int itemType = holder.getItemViewType();
             params.setFullSpan((mHasHeadView && itemType == BaseAdapter.HEAD_VIEW_TYPE) || (mHasFootView && itemType == BaseAdapter.FOOT_VIEW_TYPE));
-        }
+            view.setLayoutParams(params);
+        } /*else if (layoutParams instanceof GridLayoutManager.LayoutParams) {
+            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+            GridLayoutManager.LayoutParams params = (GridLayoutManager.LayoutParams) layoutParams;
+            params.width = (mHasHeadView && itemType == BaseAdapter.HEAD_VIEW_TYPE) || (mHasFootView && itemType == BaseAdapter.FOOT_VIEW_TYPE) ? metrics.widthPixels : ViewGroup.LayoutParams.MATCH_PARENT;
+            view.setLayoutParams(params);
+        }*/
+    }
 
+    private boolean isHeadViewType(int itemType) {
+        return itemType == BaseAdapter.HEAD_VIEW_TYPE;
+    }
+
+    private boolean isFootViewType(int itemType) {
+        return itemType == BaseAdapter.FOOT_VIEW_TYPE;
     }
 
     @Override
@@ -229,6 +243,18 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager instanceof GridLayoutManager) {
+            GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
+            gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    int type = getItemViewType(position);
+                    Log.w("getSpanSize--", type + "--"+gridLayoutManager.getSpanCount());
+                    return isFootViewType(type) || isHeadViewType(type) ? gridLayoutManager.getSpanCount() : 1;
+                }
+            });
+        }
         Log.w("BaseAdapter--", "onAttachedToRecyclerView:" + recyclerView + "--");
     }
 
