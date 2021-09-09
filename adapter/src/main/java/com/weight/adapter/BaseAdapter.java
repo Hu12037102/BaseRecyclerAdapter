@@ -175,13 +175,13 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         } else {
             type = super.getItemViewType(position);
         }
-        //  Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
+          Log.w("BaseAdapter--", "getItemViewType:" + type + "--" + position);
         return type;
     }
 
     @Override
     public long getItemId(int position) {
-        //   Log.w("BaseAdapter--", "getItemId:" + position + "--");
+        Log.w("BaseAdapter--", "getItemId:" + position + "--");
         return position;
     }
 
@@ -195,7 +195,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         if (mHasFootView) {
             mAllCount++;
         }
-        //   Log.w("BaseAdapter--", "getItemCount:" + mAllCount + "--");
+          Log.w("BaseAdapter--", "getItemCount:" + mAllCount + "--");
         return mAllCount;
     }
 
